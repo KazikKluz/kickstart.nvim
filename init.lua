@@ -95,7 +95,7 @@ vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
 
 -- ME: change the Material style
--- vim.g.material_style = 'oceanic'
+vim.g.material_style = 'oceanic'
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -908,7 +908,7 @@ require('lazy').setup({
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('material').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
         },
@@ -917,7 +917,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'material'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
