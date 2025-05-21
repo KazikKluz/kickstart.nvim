@@ -293,7 +293,7 @@ require('lazy').setup({
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
@@ -374,7 +374,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -486,13 +486,32 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
+      { 'j-hui/fidget.nvim',       opts = {} },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
     },
     config = function()
-      -- Brief aside: **What is LSP?**
+      settings = {
+        pylsp = {
+          plugins = {
+            -- formatter options
+            black = { enabled = true },
+            autopep8 = { enabled = false },
+            yapf = { enabled = false },
+            -- linter options
+            pylint = { enabled = true, executable = 'pylint' },
+            pyflakes = { enabled = false },
+            pycodestyle = { enabled = false },
+            -- type checker
+            pylsp_mypy = { enabled = true },
+            -- auto-completion options
+            jedi_completion = { fuzzy = true },
+            -- import sorting
+            pyls_isort = { enabled = true },
+          },
+        },
+      } -- Brief aside: **What is LSP?**
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
       --
@@ -697,6 +716,61 @@ require('lazy').setup({
             },
           },
         },
+        pylsp = {
+          settings = {
+            plugins = {
+              pyflakes = { enabled = false },
+              pycodestyle = { enabled = false },
+              autopep8 = { enabled = false },
+              yapf = { enabled = false },
+              mccabe = { enabled = false },
+              pylsp_mypy = { enabled = false },
+              pylsp_black = { enabled = false },
+              pylsp_isort = { enabled = false },
+            },
+          },
+        },
+        ruff = {
+          -- Notes on code actions: https://github.com/astral-sh/ruff-lsp/issues/119#issuecomment-1595628355
+          -- Get isort like behavior: https://github.com/astral-sh/ruff/issues/8926#issuecomment-1834048218
+          commands = {
+            RuffAutofix = {
+              function()
+                vim.lsp.buf.execute_command {
+                  command = 'ruff.applyAutofix',
+                  arguments = {
+                    { uri = vim.uri_from_bufnr(0) },
+                  },
+                }
+              end,
+              description = 'Ruff: Fix all auto-fixable problems',
+            },
+            RuffOrganizeImports = {
+              function()
+                vim.lsp.buf.execute_command {
+                  command = 'ruff.applyOrganizeImports',
+                  arguments = {
+                    { uri = vim.uri_from_bufnr(0) },
+                  },
+                }
+              end,
+              description = 'Ruff: Format imports',
+            },
+          },
+        },
+        jsonls = {},
+        sqlls = {},
+        terraformls = {},
+        yamlls = {},
+        bashls = {},
+        dockerls = {},
+        docker_compose_language_service = {},
+        -- tailwindcss = {},
+        -- graphql = {},
+        -- html = { filetypes = { 'html', 'twig', 'hbs' } },
+        -- cssls = {},
+        -- ltex = {},
+        -- texlab = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -733,47 +807,6 @@ require('lazy').setup({
         },
       }
     end,
-  },
-
-  { -- Autoformat
-    'stevearc/conform.nvim',
-    event = { 'BufWritePre' },
-    cmd = { 'ConformInfo' },
-    keys = {
-      {
-        '<leader>f',
-        function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
-        end,
-        mode = '',
-        desc = '[F]ormat buffer',
-      },
-    },
-    opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          return {
-            timeout_ms = 500,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
-      formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black' },
-        --
-        -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-      },
-    },
   },
 
   { -- Autocompletion
@@ -876,39 +909,196 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    --'folke/tokyonight.nvim',
-    'marko-cerovac/material.nvim',
-    name = 'material',
-    contrast = {
-      floating_windows = true,
-    },
-    plugins = {
-      'telescope',
-    },
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('material').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'material-oceanic'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
-    end,
-  },
+  --
+  -- {
+  --   'catppuccin/nvim',
+  --   name = 'catppuccin',
+  --   priority = 1000,
+  --   config = function()
+  --     require('catppuccin').setup {
+  --       flavour = 'mocha',
+  --       transparent_background = true,
+  --       term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
+  --       dim_inactive = {
+  --         enabled = true, -- dims the background color of inactive window
+  --         shade = 'dark',
+  --         percentage = 0.15, -- percentage of the shade to apply to the inactive window
+  --       },
+  --       styles = {
+  --         comments = { 'italic' }, -- Change the style of comments
+  --         conditionals = { 'italic' },
+  --         loops = { 'italic' },
+  --         functions = { 'italic' },
+  --         keywords = { 'italic' },
+  --         strings = { 'bold' },
+  --       },
+  --       integrations = {
+  --         colorful_winsep = {
+  --           enabled = true,
+  --           color = 'red',
+  --         },
+  --         fidget = true,
+  --         harpoon = true,
+  --         lsp_saga = true,
+  --         neotest = true,
+  --         noice = true,
+  --         mason = true,
+  --         telescope = {
+  --           enabled = true,
+  --           style = 'nvchad',
+  --         },
+  --         vim_sneak = true,
+  --         lsp_trouble = true,
+  --         which_key = true,
+  --         notify = true,
+  --       },
+  --     }
+  --
+  --     vim.cmd.colorscheme 'catppuccin'
+  --   end,
+  -- },
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --:
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   'folke/tokyonight.nvim',
+  --   name = 'tokyonight',
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('tokyonight').setup {
+  --       contrast = {
+  --         floating_windows = true,
+  --         terminal = true,
+  --         sidebars = true,
+  --         lsp_virtual_text = true,
+  --       },
+  --       styles = {
+  --         comments = { italic = true },
+  --         conditionals = { italic = true },
+  --         loops = { italic = true },
+  --         keywords = { italic = true },
+  --         functions = { italic = true },
+  --       },
+  --       plugins = {
+  --         'gitsigns',
+  --         'telescope',
+  --         'which-key',
+  --         'nvim-cmp',
+  --         'coc',
+  --         'colorful-winsep',
+  --         'dap',
+  --         'dashboard',
+  --         'eyeliner',
+  --         'fidget',
+  --         'flash',
+  --         'gitsigns',
+  --         'harpoon',
+  --         'hop',
+  --         'illuminate',
+  --         'indent-blankline',
+  --         'lspsaga',
+  --         'mini',
+  --         'neogit',
+  --         'neotest',
+  --         'neo-tree',
+  --         'neorg',
+  --         'noice',
+  --         'nvim-cmp',
+  --         'nvim-navic',
+  --         'nvim-tree',
+  --         'nvim-web-devicons',
+  --         'rainbow-delimiters',
+  --         'sneak',
+  --         'telescope',
+  --         'trouble',
+  --         'which-key',
+  --         'nvim-notify',
+  --       },
+  --     }
+  --
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'tokyonight'
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
+  -- { -- You can easily change to a different colorscheme.
+  --   -- Change the name of the colorscheme plugin below, and then
+  --   -- change the command in the config to whatever the name of that colorscheme is.
+  --   --:
+  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+  --   --'folke/tokyonight.nvim',
+  --   'marko-cerovac/material.nvim',
+  --   name = 'material',
+  --
+  --   priority = 1000, -- Make sure to load this before all the other start plugins.
+  --   config = function()
+  --     ---@diagnostic disable-next-line: missing-fields
+  --     require('material').setup {
+  --       contrast = {
+  --         floating_windows = true,
+  --         terminal = true,
+  --         sidebars = true,
+  --         lsp_virtual_text = true,
+  --       },
+  --       styles = {
+  --         comments = { italic = true },
+  --         conditionals = { italic = true },
+  --         loops = { italic = true },
+  --         keywords = { italic = true },
+  --         functions = { italic = true },
+  --         strings = { bold = true },
+  --       },
+  --       plugins = {
+  --         'gitsigns',
+  --         'telescope',
+  --         'which-key',
+  --         'nvim-cmp',
+  --         'coc',
+  --         'colorful-winsep',
+  --         'dap',
+  --         'dashboard',
+  --         'eyeliner',
+  --         'fidget',
+  --         'flash',
+  --         'gitsigns',
+  --         'harpoon',
+  --         'hop',
+  --         'illuminate',
+  --         'indent-blankline',
+  --         'lspsaga',
+  --         'mini',
+  --         'neogit',
+  --         'neotest',
+  --         'neo-tree',
+  --         'neorg',
+  --         'noice',
+  --         'nvim-cmp',
+  --         'nvim-navic',
+  --         'nvim-tree',
+  --         'nvim-web-devicons',
+  --         'rainbow-delimiters',
+  --         'sneak',
+  --         'telescope',
+  --         'trouble',
+  --         'which-key',
+  --         'nvim-notify',
+  --       },
+  --     }
+  --
+  --     -- Load the colorscheme here.
+  --     -- Like many other themes, this one has different styles, and you could load
+  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+  --     vim.cmd.colorscheme 'material-oceanic'
+  --
+  --     -- You can configure highlights by doing something like:
+  --     vim.cmd.hi 'Comment gui=none'
+  --   end,
+  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -1000,7 +1190,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
@@ -1022,19 +1212,19 @@ require('lazy').setup({
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
+      --   cmd = '⌘',
+      --   config = '🛠',
+      --   event = '📅',
+      --   ft = '📂',
+      --   init = '⚙',
+      --   keys = '🗝',
+      --   plugin = '🔌',
+      --   runtime = '💻',
+      --   require = '🌙',
+      --   source = '📄',
+      --   start = '🚀',
+      --   task = '📌',
+      --   lazy = '💤 ',
     },
   },
 })
