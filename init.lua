@@ -301,7 +301,7 @@ require('lazy').setup({
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-  {                     -- Useful plugin to show you pending keybinds.
+  { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
@@ -382,7 +382,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -494,7 +494,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim',       opts = {} },
+      { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
@@ -1030,79 +1030,6 @@ require('lazy').setup({
   --     -- Like many other themes, this one has different styles, and you could load
   --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
   --     vim.cmd.colorscheme 'tokyonight'
-  --     -- You can configure highlights by doing something like:
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is.
-  --   --:
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --   --'folke/tokyonight.nvim',
-  --   'marko-cerovac/material.nvim',
-  --   name = 'material',
-  --
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   config = function()
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require('material').setup {
-  --       contrast = {
-  --         floating_windows = true,
-  --         terminal = true,
-  --         sidebars = true,
-  --         lsp_virtual_text = true,
-  --       },
-  --       styles = {
-  --         comments = { italic = true },
-  --         conditionals = { italic = true },
-  --         loops = { italic = true },
-  --         keywords = { italic = true },
-  --         functions = { italic = true },
-  --         strings = { bold = true },
-  --       },
-  --       plugins = {
-  --         'gitsigns',
-  --         'telescope',
-  --         'which-key',
-  --         'nvim-cmp',
-  --         'coc',
-  --         'colorful-winsep',
-  --         'dap',
-  --         'dashboard',
-  --         'eyeliner',
-  --         'fidget',
-  --         'flash',
-  --         'gitsigns',
-  --         'harpoon',
-  --         'hop',
-  --         'illuminate',
-  --         'indent-blankline',
-  --         'lspsaga',
-  --         'mini',
-  --         'neogit',
-  --         'neotest',
-  --         'neo-tree',
-  --         'neorg',
-  --         'noice',
-  --         'nvim-cmp',
-  --         'nvim-navic',
-  --         'nvim-tree',
-  --         'nvim-web-devicons',
-  --         'rainbow-delimiters',
-  --         'sneak',
-  --         'telescope',
-  --         'trouble',
-  --         'which-key',
-  --         'nvim-notify',
-  --       },
-  --     }
-  --
-  --     -- Load the colorscheme here.
-  --     -- Like many other themes, this one has different styles, and you could load
-  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'material-oceanic'
-  --
   --     -- You can configure highlights by doing something like:
   --     vim.cmd.hi 'Comment gui=none'
   --   end,
