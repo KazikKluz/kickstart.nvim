@@ -1,51 +1,53 @@
 return {
-  'folke/tokyonight.nvim',
+  'catppuccin/nvim',
+  name = 'catppuccin',
   priority = 1000,
   config = function()
-    local transparent = true -- set to true if you would like to enable transparency
-
-    local bg = '#011628'
-    local bg_dark = '#011423'
-    local bg_highlight = '#143652'
-    local bg_search = '#0A64AC'
-    local bg_visual = '#275378'
-    local fg = '#CBE0F0'
-    local fg_dark = '#B4D0E9'
-    local fg_gutter = '#627E97'
-    local border = '#547998'
-
-    require('tokyonight').setup {
-      style = 'night',
-      transparent = transparent,
-      styles = {
-        sidebars = transparent and 'transparent' or 'dark',
-        floats = transparent and 'transparent' or 'dark',
-        comments = { italic = true },
-        conditionals = { italic = true },
-        loops = { italic = true },
-        keywords = { italic = true },
-        functions = { italic = true },
-        strings = { bold = true },
+    require('catppuccin').setup {
+      flavour = 'mocha',
+      transparent_background = true,
+      term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
+      dim_inactive = {
+        enabled = true, -- dims the background color of inactive window
+        shade = 'dark',
+        percentage = 0.15, -- percentage of the shade to apply to the inactive window
       },
-      on_colors = function(colors)
-        colors.bg = bg
-        colors.bg_dark = transparent and colors.none or bg_dark
-        colors.bg_float = transparent and colors.none or bg_dark
-        colors.bg_highlight = bg_highlight
-        colors.bg_popup = bg_dark
-        colors.bg_search = bg_search
-        colors.bg_sidebar = transparent and colors.none or bg_dark
-        colors.bg_statusline = transparent and colors.none or bg_dark
-        colors.bg_visual = bg_visual
-        colors.border = border
-        colors.fg = fg
-        colors.fg_dark = fg_dark
-        colors.fg_float = fg
-        colors.fg_gutter = fg_gutter
-        colors.fg_sidebar = fg_dark
-      end,
+      contrast = {
+        floating_windows = true,
+        terminal = true,
+        sidebars = true,
+        lsp_virtual_text = true,
+      },
+      styles = {
+        comments = { 'italic' }, -- Change the style of comments
+        conditionals = { 'italic' },
+        loops = { 'italic' },
+        functions = { 'italic' },
+        keywords = { 'italic' },
+        --       strings = { 'bold' },
+      },
+      integrations = {
+        colorful_winsep = {
+          enabled = true,
+          color = 'red',
+        },
+        fidget = true,
+        harpoon = true,
+        lsp_saga = true,
+        neotest = true,
+        noice = true,
+        mason = true,
+        telescope = {
+          enabled = true,
+          style = 'nvchad',
+        },
+        vim_sneak = true,
+        lsp_trouble = true,
+        which_key = true,
+        notify = true,
+      },
     }
 
-    vim.cmd 'colorscheme tokyonight'
+    vim.cmd.colorscheme 'catppuccin'
   end,
 }
