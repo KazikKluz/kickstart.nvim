@@ -94,8 +94,6 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
--- ME: change the Material style
-vim.g.material_style = 'material-oceanic'
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -500,26 +498,27 @@ require('lazy').setup({
       'saghen/blink.cmp',
     },
     config = function()
-      settings = {
-        pylsp = {
-          plugins = {
-            -- formatter options
-            black = { enabled = true },
-            autopep8 = { enabled = false },
-            yapf = { enabled = false },
-            -- linter options
-            pylint = { enabled = true, executable = 'pylint' },
-            pyflakes = { enabled = false },
-            pycodestyle = { enabled = false },
-            -- type checker
-            pylsp_mypy = { enabled = true },
-            -- auto-completion options
-            jedi_completion = { fuzzy = true },
-            -- import sorting
-            pyls_isort = { enabled = true },
-          },
-        },
-      } -- Brief aside: **What is LSP?**
+      settings = {}
+      --  pylsp = {
+      --   plugins = {
+      --     -- formatter options
+      --     black = { enabled = true },
+      --     autopep8 = { enabled = false },
+      --     yapf = { enabled = false },
+      --     -- linter options
+      --     pylint = { enabled = true, executable = 'pylint' },
+      --     pyflakes = { enabled = false },
+      --     pycodestyle = { enabled = false },
+      --     -- type checker
+      --     pylsp_mypy = { enabled = true },
+      --     -- auto-completion options
+      --     jedi_completion = { fuzzy = true },
+      --     -- import sorting
+      --     pyls_isort = { enabled = true },
+      --   },
+      -- },
+      -- }
+      -- Brief aside: **What is LSP?**
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
       --
@@ -775,11 +774,30 @@ require('lazy').setup({
         docker_compose_language_service = {},
         -- tailwindcss = {},
         -- graphql = {},
-        -- html = { filetypes = { 'html', 'twig', 'hbs' } },
-        -- cssls = {},
+        html = { filetypes = { 'html', 'twig', 'hbs' } },
+        cssls = {},
         -- ltex = {},
         -- texlab = {},
       }
+
+      vim.lsp.config('pylsp', {
+        cmd = { 'pylsp' },
+        filetypes = { 'python' },
+        settings = {
+          pylsp = {
+            plugins = {
+              pyflakes = { enabled = false },
+              pycodestyle = { enabled = false },
+              autopep8 = { enabled = false },
+              yapf = { enabled = false },
+              mccabe = { enabled = false },
+              pylsp_mypy = { enabled = false },
+              pylsp_black = { enabled = false },
+              pylsp_isort = { enabled = false },
+            },
+          },
+        },
+      })
 
       -- Ensure the servers and tools above are installed
       --
@@ -918,123 +936,7 @@ require('lazy').setup({
     },
   },
   --
-  -- {
-  --   'catppuccin/nvim',
-  --   name = 'catppuccin',
-  --   priority = 1000,
-  --   config = function()
-  --     require('catppuccin').setup {
-  --       flavour = 'mocha',
-  --       transparent_background = true,
-  --       term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
-  --       dim_inactive = {
-  --         enabled = true, -- dims the background color of inactive window
-  --         shade = 'dark',
-  --         percentage = 0.15, -- percentage of the shade to apply to the inactive window
-  --       },
-  --       styles = {
-  --         comments = { 'italic' }, -- Change the style of comments
-  --         conditionals = { 'italic' },
-  --         loops = { 'italic' },
-  --         functions = { 'italic' },
-  --         keywords = { 'italic' },
-  --         strings = { 'bold' },
-  --       },
-  --       integrations = {
-  --         colorful_winsep = {
-  --           enabled = true,
-  --           color = 'red',
-  --         },
-  --         fidget = true,
-  --         harpoon = true,
-  --         lsp_saga = true,
-  --         neotest = true,
-  --         noice = true,
-  --         mason = true,
-  --         telescope = {
-  --           enabled = true,
-  --           style = 'nvchad',
-  --         },
-  --         vim_sneak = true,
-  --         lsp_trouble = true,
-  --         which_key = true,
-  --         notify = true,
-  --       },
-  --     }
   --
-  --     vim.cmd.colorscheme 'catppuccin'
-  --   end,
-  -- },
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is.
-  --   --:
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --   'folke/tokyonight.nvim',
-  --   name = 'tokyonight',
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   config = function()
-  --     ---@diagnostic disable-next-line: missing-fields
-  --     require('tokyonight').setup {
-  --       contrast = {
-  --         floating_windows = true,
-  --         terminal = true,
-  --         sidebars = true,
-  --         lsp_virtual_text = true,
-  --       },
-  --       styles = {
-  --         comments = { italic = true },
-  --         conditionals = { italic = true },
-  --         loops = { italic = true },
-  --         keywords = { italic = true },
-  --         functions = { italic = true },
-  --       },
-  --       plugins = {
-  --         'gitsigns',
-  --         'telescope',
-  --         'which-key',
-  --         'nvim-cmp',
-  --         'coc',
-  --         'colorful-winsep',
-  --         'dap',
-  --         'dashboard',
-  --         'eyeliner',
-  --         'fidget',
-  --         'flash',
-  --         'gitsigns',
-  --         'harpoon',
-  --         'hop',
-  --         'illuminate',
-  --         'indent-blankline',
-  --         'lspsaga',
-  --         'mini',
-  --         'neogit',
-  --         'neotest',
-  --         'neo-tree',
-  --         'neorg',
-  --         'noice',
-  --         'nvim-cmp',
-  --         'nvim-navic',
-  --         'nvim-tree',
-  --         'nvim-web-devicons',
-  --         'rainbow-delimiters',
-  --         'sneak',
-  --         'telescope',
-  --         'trouble',
-  --         'which-key',
-  --         'nvim-notify',
-  --       },
-  --     }
-  --
-  --     -- Load the colorscheme here.
-  --     -- Like many other themes, this one has different styles, and you could load
-  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'tokyonight'
-  --     -- You can configure highlights by doing something like:
-  --     vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
-
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1094,6 +996,7 @@ require('lazy').setup({
         'vim',
         'vimdoc',
         'javascript',
+        'terraform',
         'typescript',
         'python',
       },
